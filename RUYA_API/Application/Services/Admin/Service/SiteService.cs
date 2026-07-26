@@ -65,6 +65,26 @@ namespace RUYA_API.Application.Services.Admin.Service
             await _context.SaveChangesAsync();
         }
 
+        public async Task DeleteAsync(int id)
+        {
+            var site = await _context.Sites.FindAsync(id);
+
+            if (site is null)
+            {
+                throw new AppException($"Site with Id {id} was not found.", StatusCodes.Status404NotFound);
+            }
+
+            try
+            {
+                _context.Sites.Remove(site);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new AppException("This site cannot be deleted because it is referenced by other records.", StatusCodes.Status400BadRequest);
+            }
+        }
+
         private static void ValidateSite(string name, float latitude, float longitude)
         {
             if (string.IsNullOrWhiteSpace(name))

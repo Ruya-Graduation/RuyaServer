@@ -11,5 +11,7 @@ namespace RUYA_API.Application.Services.Admin.Interfaces
         Task<SiteDto> CreateAsync(CreateSiteDto dto);
 
         Task UpdateAsync(int id, UpdateSiteDto dto);
+
+        Task DeleteAsync(int id);
     }
 }

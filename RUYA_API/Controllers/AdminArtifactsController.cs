@@ -31,7 +31,7 @@ namespace RUYA_API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(CreateArtifactDto dto)
+        public async Task<IActionResult> Create([FromForm] CreateArtifactDto dto)
         {
             var artifact = await _artifactService.CreateAsync(dto);
 
@@ -41,10 +41,18 @@ namespace RUYA_API.Controllers
         }
 
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, UpdateArtifactDto dto)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateArtifactDto dto)
         {
             await _artifactService.UpdateAsync(id, dto);
             return Ok(ResponseFactory.Success(message: "Artifact updated successfully."));
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _artifactService.DeleteAsync(id);
+
+            return Ok(ResponseFactory.Success("Artifact deleted successfully."));
         }
     }
 }

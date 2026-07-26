@@ -27,8 +27,7 @@ namespace RUYA_API.Application.Services.Admin.Mappings
                 Name = dto.Name,
                 Category = dto.Category,
                 Civilization = dto.Civilization,
-                Period = dto.Period,
-                ImageUrl = dto.ImageUrl
+                Period = dto.Period
             };
         }
 
@@ -39,7 +38,6 @@ namespace RUYA_API.Application.Services.Admin.Mappings
             artifact.Category = dto.Category;
             artifact.Civilization = dto.Civilization;
             artifact.Period = dto.Period;
-            artifact.ImageUrl = dto.ImageUrl;
         }
     }
 }

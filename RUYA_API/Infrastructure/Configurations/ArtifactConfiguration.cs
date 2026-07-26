@@ -28,6 +28,9 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(a => a.ImagePublicId)
+                .HasMaxLength(300);
+
             builder.Property(a => a.ImageUrl)
                 .HasMaxLength(500);
 

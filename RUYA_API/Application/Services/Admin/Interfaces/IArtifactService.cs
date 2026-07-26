@@ -11,5 +11,7 @@ namespace RUYA_API.Application.Services.Admin.Interfaces
         Task<ArtifactDto> CreateAsync(CreateArtifactDto dto);
 
         Task UpdateAsync(int id, UpdateArtifactDto dto);
+
+        Task DeleteAsync(int id);
     }
 }

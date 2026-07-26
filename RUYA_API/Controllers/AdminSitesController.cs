@@ -46,5 +46,13 @@ namespace RUYA_API.Controllers
             await _siteService.UpdateAsync(id, dto);
             return Ok(ResponseFactory.Success(message: "Site updated successfully."));
         }
+
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            await _siteService.DeleteAsync(id);
+
+            return Ok(ResponseFactory.Success("Site deleted successfully."));
+        }
     }
 }

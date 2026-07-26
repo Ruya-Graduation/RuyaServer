@@ -23,7 +23,6 @@ namespace RUYA_API.Application.Services.Admin.DTOs.Artifact
         [MaxLength(100)]
         public string Period { get; set; } = string.Empty;
 
-        [MaxLength(500)]
-        public string ImageUrl { get; set; } = string.Empty;
+        public IFormFile? Image { get; set; }
     }
 }

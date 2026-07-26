@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RUYA_API.Application.Common.Interfaces;
 using RUYA_API.Application.Services.Admin.DTOs.Artifact;
 using RUYA_API.Application.Services.Admin.Interfaces;
 using RUYA_API.Application.Services.Admin.Mappings;
@@ -10,10 +11,14 @@ namespace RUYA_API.Application.Services.Admin.Service
     public class ArtifactService : IArtifactService
     {
         private readonly RuyaContext _context;
+        private readonly IImageService _imageService;
 
-        public ArtifactService(RuyaContext context)
+        public ArtifactService(
+            RuyaContext context,
+            IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         public async Task<IEnumerable<ArtifactDto>> GetAllAsync()
@@ -43,6 +48,14 @@ namespace RUYA_API.Application.Services.Admin.Service
 
             var artifact = dto.ToEntity();
 
+            if (dto.Image is not null)
+            {
+                var uploadResult = await _imageService.UploadImageAsync(dto.Image);
+
+                artifact.ImageUrl = uploadResult.ImageUrl;
+                artifact.ImagePublicId = uploadResult.PublicId;
+            }
+
             _context.Artifacts.Add(artifact);
 
             await _context.SaveChangesAsync();
@@ -62,7 +75,46 @@ namespace RUYA_API.Application.Services.Admin.Service
 
             dto.UpdateEntity(artifact);
 
+            if (dto.Image is not null)
+            {
+                if (!string.IsNullOrWhiteSpace(artifact.ImagePublicId))
+                {
+                    await _imageService.DeleteImageAsync(artifact.ImagePublicId);
+                }
+
+                var uploadResult = await _imageService.UploadImageAsync(dto.Image);
+
+                artifact.ImageUrl = uploadResult.ImageUrl;
+                artifact.ImagePublicId = uploadResult.PublicId;
+            }
+
             await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteAsync(int id)
+        {
+            var artifact = await _context.Artifacts.FindAsync(id);
+
+            if (artifact is null)
+            {
+                throw new AppException($"Artifact with Id {id} was not found.", StatusCodes.Status404NotFound);
+            }
+
+            try
+            {
+                if (!string.IsNullOrWhiteSpace(artifact.ImagePublicId))
+                {
+                    await _imageService.DeleteImageAsync(artifact.ImagePublicId);
+                }
+
+                _context.Artifacts.Remove(artifact);
+
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException)
+            {
+                throw new AppException("This artifact cannot be deleted because it is referenced by other records.", StatusCodes.Status400BadRequest);
+            }
         }
 
         private async Task ValidateArtifact(CreateArtifactDto dto)
