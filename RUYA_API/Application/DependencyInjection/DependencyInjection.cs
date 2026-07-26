@@ -1,4 +1,6 @@
-﻿using RUYA_API.Application.Services.Auth.Interfaces;
+﻿using RUYA_API.Application.Services.Admin.Interfaces;
+using RUYA_API.Application.Services.Admin.Service;
+using RUYA_API.Application.Services.Auth.Interfaces;
 using RUYA_API.Application.Services.Auth.Service;
 
 namespace RUYA_API.Application.DependencyInjection
@@ -9,6 +11,8 @@ namespace RUYA_API.Application.DependencyInjection
         {
             // Register the Use Case / Service
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<ISiteService, SiteService>();
+            services.AddScoped<IArtifactService, ArtifactService>();
 
             // (No MediatR, No FluentValidation, No Scanners needed for now!)
 
