@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using RUYA_API.Domain.Common;
 using RUYA_API.Domain.Entities;
 
 namespace RUYA_API.Infrastructure.Context
 {
-    public class RuyaContext: DbContext
+    public class RuyaContext: IdentityDbContext<User>
     {
         public RuyaContext(DbContextOptions<RuyaContext> options) : base(options)
         {

@@ -1,11 +1,11 @@
-﻿using RUYA_API.Domain.Common;
+﻿using Microsoft.AspNetCore.Identity;
+using RUYA_API.Domain.Common;
 
 namespace RUYA_API.Domain.Entities
 {
-    public class User: EntityBase
+    public class User: IdentityUser
     {
         public string FullName { get; set; } = string.Empty;
-        public string Email { get; set; } = string.Empty;
         public string PreferredLanguage { get; set; } = string.Empty;
         public string KnowledgeLevel { get; set; } = string.Empty;
 

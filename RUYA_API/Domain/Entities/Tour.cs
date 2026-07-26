@@ -5,7 +5,7 @@ namespace RUYA_API.Domain.Entities
 {
     public class Tour : EntityBase
     {
-        public int UserId { get; set; }
+        public string UserId { get; set; }
         public User User { get; set; } = null!;
 
         public int SiteId { get; set; }

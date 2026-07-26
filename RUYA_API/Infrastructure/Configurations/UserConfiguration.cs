@@ -20,9 +20,6 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(200);
 
-            // Emails should be unique — remove if your business rules allow duplicates
-            builder.HasIndex(u => u.Email)
-                .IsUnique();
 
             builder.Property(u => u.PreferredLanguage)
                 .IsRequired()
