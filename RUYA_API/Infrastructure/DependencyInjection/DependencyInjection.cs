@@ -30,6 +30,10 @@ namespace RUYA_API.Infrastructure.DependencyInjection
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IJWTGenerator, JWTGenerator>();
 
+            services.Configure<CloudinarySettings>(configuration.GetSection("CloudinarySettings"));
+
+            services.AddScoped<IImageService, CloudinaryService>();
+
             return services;
         }
     }
