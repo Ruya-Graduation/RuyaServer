@@ -4,9 +4,10 @@ namespace RUYA_API.Application.Services.Auth.DTOs
 {
     public class RegisterRequest
     {
-        [Required(ErrorMessage = "Full name is required.")]
+        [Required(ErrorMessage = "User name is required.")]
         [MaxLength(150)]
-        public string FullName { get; set; }
+        public string UserName { get; set; }
+
 
         [Required(ErrorMessage = "Email is required.")]
         [EmailAddress(ErrorMessage = "Invalid email format.")]
