@@ -7,14 +7,18 @@ namespace RUYA_API.Application.DependencyInjection
 {
     public static class DependencyInjection
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
+        public static IServiceCollection AddApplication(this IServiceCollection services, IConfiguration configuration)
         {
             // Register the Use Case / Service
+            services.AddScoped<IOtpService, OtpService>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<IArtifactService, ArtifactService>();
 
             // (No MediatR, No FluentValidation, No Scanners needed for now!)
+            services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
+            services.AddScoped<IEmailSender, EmailSender>();
+            services.AddMemoryCache();
 
             return services;
         }
