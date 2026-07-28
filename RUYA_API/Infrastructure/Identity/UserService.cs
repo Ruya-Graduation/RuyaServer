@@ -23,10 +23,9 @@ namespace RUYA_API.Infrastructure.Identity
             return user is null ? null : user;
         }
 
-        public async Task<IdentityOperationResult> CreateUserAsync(string email, string userName, string password)
+        public async Task<IdentityOperationResult> CreateUserAsync(User newUser,string password)
         {
-            var user = new User { Email = email, UserName = userName };
-            var result = await _userManager.CreateAsync(user, password);
+            var result = await _userManager.CreateAsync(newUser,password);
 
             return result.Succeeded
                 ? IdentityOperationResult.Success()
@@ -47,6 +46,35 @@ namespace RUYA_API.Infrastructure.Identity
             if (user is null) return Array.Empty<string>();
 
             return await _userManager.GetRolesAsync(user);
+        }
+
+        public async Task<IdentityOperationResult> AssignRoleAsync(string userId, string role)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user is null)
+            {
+                return IdentityOperationResult.Failure(new[] { "User not found." });
+            }
+
+            var result = await _userManager.AddToRoleAsync(user, role);
+
+            return result.Succeeded
+                ? IdentityOperationResult.Success()
+                : IdentityOperationResult.Failure(result.Errors.Select(e => e.Description));
+        }
+
+        public async Task<string> GeneratePasswordResetTokenAsync(User user)
+        {
+            var result = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return result;
+        }
+
+        public async Task<IdentityOperationResult> ResetPasswordAsync(User user, string token, string newPass)
+        {
+            var result = await _userManager.ResetPasswordAsync(user, token, newPass);
+            return result.Succeeded
+                ? IdentityOperationResult.Success()
+                : IdentityOperationResult.Failure(result.Errors.Select(e => e.Description));
         }
     }
 }

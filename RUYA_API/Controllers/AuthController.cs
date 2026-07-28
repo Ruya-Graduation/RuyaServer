@@ -21,9 +21,6 @@ namespace RUYA_API.Controllers
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterRequest request)
         {
-            // [ApiController] automatically validates the request (DataAnnotations)
-            // and returns a 400 Bad Request if invalid.
-
             var response = await _authService.RegisterAsync(request);
             return Ok(response);
         }
@@ -34,5 +31,28 @@ namespace RUYA_API.Controllers
             var response = await _authService.LoginAsync(request);
             return Ok(response);
         }
+
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest request)
+        {
+            var response = await _authService.ForgotPassword(request);
+            return Ok(response);
+        }
+
+        [HttpPost("verify-otp")]
+        public async Task<IActionResult> ForgotPassword(VerifyOtpRequest request)
+        {
+            var response = await _authService.VerifyOtp(request);
+            return Ok(response);
+        }
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest request)
+        {
+            var response = await _authService.ResetPassword(request);
+            return Ok(response);
+        }
+
+
+
     }
 }
