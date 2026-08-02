@@ -12,16 +12,49 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
 
             builder.HasKey(c => c.Id);
 
-            builder.Property(c => c.StartedAt)
+            builder.Property(c => c.Title)
+                .HasMaxLength(200);
+
+            builder.Property(c => c.Status)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(c => c.CurrentLanguage)
+                .IsRequired()
+                .HasMaxLength(10);
+
+            builder.Property(c => c.CurrentMode)
+                .IsRequired()
+                .HasMaxLength(50);
+
+            builder.Property(c => c.ModelName)
+                .HasMaxLength(100);
+
+            builder.Property(c => c.Summary)
+                .HasColumnType("text");
+
+            builder.Property(c => c.LastMessageAt)
                 .IsRequired();
 
-            // Conversation -> Messages: cascade (a message can't exist without its conversation)
+            builder.HasOne(c => c.User)
+                .WithMany(u => u.Conversations)
+                .HasForeignKey(c => c.UserId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.HasOne(c => c.CurrentArtifact)
+                .WithMany(a => a.Conversations)
+                .HasForeignKey(c => c.CurrentArtifactId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.HasMany(c => c.Messages)
                 .WithOne(m => m.Conversation)
                 .HasForeignKey(m => m.ConversationId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // StopId FK relationship is configured from the TourStop side.
+            builder.HasMany(c => c.Attachments)
+                .WithOne(a => a.Conversation)
+                .HasForeignKey(a => a.ConversationId)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

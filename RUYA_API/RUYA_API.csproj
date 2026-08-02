@@ -30,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Application\Services\Chat\Mappings\" />
     <Folder Include="ExceptionHandling\CustomException\" />
     <Folder Include="Infrastructure\Migrations\" />
     <Folder Include="Responses\" />

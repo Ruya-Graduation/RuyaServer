@@ -34,6 +34,8 @@ namespace RUYA_API.Infrastructure.DependencyInjection
 
             services.AddScoped<IImageService, CloudinaryService>();
 
+            services.AddScoped<IAIService, FakeAIService>();
+
             return services;
         }
     }

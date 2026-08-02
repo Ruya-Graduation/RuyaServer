@@ -15,14 +15,8 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
             builder.Property(ts => ts.VisitedAt)
                 .IsRequired();
 
-            // TourStop -> Conversations: cascade (a conversation is tied to that specific stop)
-            builder.HasMany(ts => ts.Conversations)
-                .WithOne(c => c.TourStop)
-                .HasForeignKey(c => c.StopId)
-                .OnDelete(DeleteBehavior.Cascade);
-
-            // TourId and ArtifactId FK relationships are configured from
-            // the Tour and Artifact sides respectively.
+            // TourId and ArtifactId relationships are configured
+            // from TourConfiguration and ArtifactConfiguration.
         }
     }
 }

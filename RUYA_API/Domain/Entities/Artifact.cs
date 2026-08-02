@@ -19,5 +19,7 @@ namespace RUYA_API.Domain.Entities
 
         // Many-to-many (verified_by): an artifact can be backed by several sources
         public ICollection<Source> Sources { get; set; } = new List<Source>();
+
+        public ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
     }
 }

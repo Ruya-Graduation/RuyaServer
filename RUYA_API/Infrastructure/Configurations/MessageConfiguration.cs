@@ -12,22 +12,19 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
 
             builder.HasKey(m => m.Id);
 
-            builder.Property(m => m.Sender)
+            builder.Property(m => m.Role)
                 .IsRequired()
-                .HasMaxLength(50);
-
-            builder.Property(m => m.AgentType)
-                .IsRequired()
-                .HasMaxLength(50);
+                .HasMaxLength(20);
 
             builder.Property(m => m.Content)
                 .IsRequired()
-                .HasColumnType("text"); // conversation content can run long, don't cap it artificially
+                .HasColumnType("text");
 
-            builder.Property(m => m.Timestamp)
-                .IsRequired();
+            builder.Property(m => m.ModelName)
+                .HasMaxLength(100);
 
-            // ConversationId FK relationship is configured from the Conversation side.
+            builder.Property(m => m.Metadata)
+                .HasColumnType("text");
         }
     }
 }

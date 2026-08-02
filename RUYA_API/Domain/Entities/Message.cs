@@ -5,11 +5,20 @@ namespace RUYA_API.Domain.Entities
     public class Message : EntityBase
     {
         public int ConversationId { get; set; }
+
         public Conversation Conversation { get; set; } = null!;
 
-        public string Sender { get; set; } = string.Empty;
-        public string AgentType { get; set; } = string.Empty;
+        // user | assistant | system
+        public string Role { get; set; } = string.Empty;
+
         public string Content { get; set; } = string.Empty;
-        public DateTime Timestamp { get; set; }
+
+        public int? InputTokens { get; set; }
+
+        public int? OutputTokens { get; set; }
+
+        public string? ModelName { get; set; }
+
+        public string? Metadata { get; set; }
     }
 }

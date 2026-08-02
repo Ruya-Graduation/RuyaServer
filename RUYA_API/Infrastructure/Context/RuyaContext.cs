@@ -5,7 +5,7 @@ using RUYA_API.Domain.Entities;
 
 namespace RUYA_API.Infrastructure.Context
 {
-    public class RuyaContext: IdentityDbContext<User>
+    public class RuyaContext : IdentityDbContext<User>
     {
         public RuyaContext(DbContextOptions<RuyaContext> options) : base(options)
         {
@@ -21,6 +21,7 @@ namespace RUYA_API.Infrastructure.Context
         public DbSet<Message> Messages => Set<Message>();
         public DbSet<MemoryAlbum> MemoryAlbums => Set<MemoryAlbum>();
         public DbSet<AlbumItem> AlbumItems => Set<AlbumItem>();
+        public DbSet<ConversationAttachment> ConversationAttachments => Set<ConversationAttachment>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
