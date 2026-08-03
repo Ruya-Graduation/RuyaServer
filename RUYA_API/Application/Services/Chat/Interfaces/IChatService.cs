@@ -6,7 +6,7 @@ namespace RUYA_API.Application.Services.Chat.Interfaces
     {
         Task<ChatResponseDto> SendMessageAsync(ChatRequestDto dto, string? userId);
 
-        Task<ConversationDetailsDto> GetConversationAsync(int conversationId);
+        Task<ConversationDetailsDto> GetConversationAsync(int conversationId, string? userId);
 
         Task<IEnumerable<ConversationListItemDto>> GetConversationsAsync(string? userId);
 

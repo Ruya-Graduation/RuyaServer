@@ -8,6 +8,7 @@ namespace RUYA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    //[Authorize]
     public class ChatController : ControllerBase
     {
         private readonly IChatService _chatService;
@@ -32,7 +33,9 @@ namespace RUYA_API.Controllers
         [HttpGet("{conversationId:int}")]
         public async Task<IActionResult> GetConversation(int conversationId)
         {
-            var conversation = await _chatService.GetConversationAsync(conversationId);
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var conversation = await _chatService.GetConversationAsync(conversationId, userId);
 
             return Ok(
                 ResponseFactory.Success(

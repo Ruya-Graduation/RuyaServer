@@ -14,7 +14,11 @@ namespace RUYA_API.Application.Services.Admin.Mappings
                 City = site.City,
                 Country = site.Country,
                 Latitude = site.Latitude,
-                Longitude = site.Longitude
+                Longitude = site.Longitude,
+                Hours = site.Hours,
+                Ticket = site.Ticket,
+                Crowds = site.Crowds,
+                Description = site.Description
             };
         }
 
@@ -26,7 +30,11 @@ namespace RUYA_API.Application.Services.Admin.Mappings
                 City = dto.City,
                 Country = dto.Country,
                 Latitude = dto.Latitude,
-                Longitude = dto.Longitude
+                Longitude = dto.Longitude,
+                Hours = dto.Hours,
+                Ticket = dto.Ticket,
+                Crowds = dto.Crowds,
+                Description = dto.Description
             };
         }
 
@@ -37,6 +45,10 @@ namespace RUYA_API.Application.Services.Admin.Mappings
             site.Country = dto.Country;
             site.Latitude = dto.Latitude;
             site.Longitude = dto.Longitude;
+            site.Hours = dto.Hours;
+            site.Ticket = dto.Ticket;
+            site.Crowds = dto.Crowds;
+            site.Description = dto.Description;
         }
     }
 }

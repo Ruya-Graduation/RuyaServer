@@ -21,5 +21,17 @@ namespace RUYA_API.Application.Services.Admin.DTOs.Site
 
         [Required]
         public float Longitude { get; set; }
+
+        [MaxLength(200)]
+        public string Hours { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string Ticket { get; set; } = string.Empty;
+
+        [MaxLength(100)]
+        public string Crowds { get; set; } = string.Empty;
+
+        [MaxLength(2000)]
+        public string Description { get; set; } = string.Empty;
     }
 }

@@ -34,12 +34,16 @@ namespace RUYA_API.Application.Services.Chat.Service
                     throw new AppException(
                         "Conversation not found.",
                         StatusCodes.Status404NotFound);
+
+                // Ownership validation - users can only send messages to their own conversations
+                if (conversation.UserId != userId)
+                    throw new AppException(
+                        "You are not allowed to send messages to this conversation.",
+                        StatusCodes.Status403Forbidden);
             }
             else
             {
-                // TODO:
-                // When JWT authentication is fully integrated, the authenticated user's Id
-                // will be stored here instead of relying on the current placeholder value.
+                // JWT authentication is integrated - userId from authenticated user's claims
                 conversation = new Conversation
                 {
                     UserId = userId,
@@ -97,12 +101,9 @@ namespace RUYA_API.Application.Services.Chat.Service
             return aiResponse;
         }
 
-        public async Task<ConversationDetailsDto> GetConversationAsync(int conversationId)
+        public async Task<ConversationDetailsDto> GetConversationAsync(int conversationId, string? userId)
         {
-            // TODO:
-            // Currently conversations are filtered using the provided userId.
-            // After authentication is completed, this value will come directly
-            // from the authenticated user's JWT claims.
+            // JWT authentication is integrated - userId comes from authenticated user's claims
             var conversation = await _context.Conversations
                 .Include(c => c.Messages)
                 .AsNoTracking()
@@ -113,6 +114,14 @@ namespace RUYA_API.Application.Services.Chat.Service
                 throw new AppException(
                     "Conversation not found.",
                     StatusCodes.Status404NotFound);
+            }
+
+            // Ownership validation - users can only access their own conversations
+            if (conversation.UserId != userId)
+            {
+                throw new AppException(
+                    "You are not allowed to access this conversation.",
+                    StatusCodes.Status403Forbidden);
             }
 
             return new ConversationDetailsDto
@@ -169,15 +178,13 @@ namespace RUYA_API.Application.Services.Chat.Service
                     StatusCodes.Status404NotFound);
             }
 
-            // TODO:
-            // Enable ownership validation after JWT authentication is completed.
-            // The authenticated user's Id will be compared against Conversation.UserId.
-            // if (conversation.UserId != userId)
-            // {
-            //     throw new AppException(
-            //         "You are not allowed to delete this conversation.",
-            //         StatusCodes.Status403Forbidden);
-            // }
+            // Ownership validation - users can only delete their own conversations
+            if (conversation.UserId != userId)
+            {
+                throw new AppException(
+                    "You are not allowed to delete this conversation.",
+                    StatusCodes.Status403Forbidden);
+            }
 
             _context.ConversationAttachments.RemoveRange(conversation.Attachments);
 

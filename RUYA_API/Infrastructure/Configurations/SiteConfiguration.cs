@@ -30,6 +30,18 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
             builder.Property(s => s.Longitude)
                 .IsRequired();
 
+            builder.Property(s => s.Hours)
+                .HasMaxLength(200);
+
+            builder.Property(s => s.Ticket)
+                .HasMaxLength(100);
+
+            builder.Property(s => s.Crowds)
+                .HasMaxLength(100);
+
+            builder.Property(s => s.Description)
+                .HasMaxLength(2000);
+
             // Site -> Artifacts: cascade (artifact has no meaning without its site)
             builder.HasMany(s => s.Artifacts)
                 .WithOne(a => a.Site)
