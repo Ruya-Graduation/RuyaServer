@@ -4,6 +4,10 @@ namespace RUYA_API.Application.Services.Auth.DTOs
 {
     public class RegisterRequest
     {
+        /// <summary>
+        /// User's full name.
+        /// Example: Ahmed Mohamed
+        /// </summary>
         [Required(ErrorMessage = "User name is required.")]
         [MaxLength(150)]
         public string UserName { get; set; }

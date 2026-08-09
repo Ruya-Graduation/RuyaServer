@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using RUYA_API.Application.Common;
@@ -74,26 +74,25 @@ namespace RUYA_API.Application.Services.Auth.Service
             };
 
             // 3. Save to the database (via Infrastructure wrapper)
-            var createResult = await _userService.CreateUserAsync(user,request.Password);
+            var createResult = await _userService.CreateUserAsync(user, request.Password);
             if (!createResult.Succeeded)
             {
-                // Identity returns a list of errors (e.g., weak password, duplicate)
-                //var errors = string.Join(", ", createResult.Errors.Select(e => e.Description));
-                throw new AppException($"Registration failed: {createResult.Errors}",500);
+                var errors = string.Join(", ", createResult.Errors);
+                throw new AppException($"Registration failed: {errors}", 400);
             }
 
             var roleResult = await _userService.AssignRoleAsync(user.Id, Roles.User);
             if (!roleResult.Succeeded)
             {
                 var errors = string.Join(", ", roleResult.Errors);
-                throw new AppException($"Role assignment failed: {errors}",500);
+                throw new AppException($"Role assignment failed: {errors}", 500);
             }
             // 4. Get roles (if any) and Generate JWT
             var roles = await _userService.GetRolesAsync(user.Id); // Empty if no roles set
             var token = _jwtGenerator.GenerateToken(user, roles);
 
             // 5. Return the response
-            return ResponseFactory.Success<string>(token, "user registered succesfully");
+            return ResponseFactory.Success<string>(token, "user registered successfully");
         }
 
         
@@ -105,7 +104,6 @@ namespace RUYA_API.Application.Services.Auth.Service
             if (user is not null)
             {
                 await _emailSender.SendOtpEmailAsync(request.Email, _otpService.GenerateAndStoreOtp(request.Email));
-                return ResponseFactory.Success("If an account with that email exists, a verification code has been sent." );
             }
             return ResponseFactory.Success("If an account with that email exists, a verification code has been sent.");
         }
@@ -114,7 +112,10 @@ namespace RUYA_API.Application.Services.Auth.Service
         {
             var result = _otpService.VerifyOtp(request.Email, request.Code);
             if (result == OtpVerificationResult.TooManyAttempts)
-                throw new AppException("too many attempts", 429);
+                throw new AppException("Too many attempts. Please try again later.", 429);
+
+            if (result != OtpVerificationResult.Success)
+                throw new AppException("Invalid or expired verification code.", 400);
 
             return ResponseFactory.Success<VerifyOtpResponse>(new VerifyOtpResponse {
                 ResetToken = _otpService.IssueResetToken(request.Email),
@@ -125,11 +126,9 @@ namespace RUYA_API.Application.Services.Auth.Service
 
         public async Task<ApiResponse<object>> ResetPassword(ResetPasswordRequest request)
         {
-            
-
             var email = _otpService.ConsumeResetToken(request.Email, request.ResetToken);
             if (email is null)
-                throw new AppException("invalid email", 400);
+                throw new AppException("Reset session is invalid or has expired. Please start over.", 400);
 
             var user = await _userService.FindByEmailAsync(email);
             if (user is null)
@@ -141,8 +140,8 @@ namespace RUYA_API.Application.Services.Auth.Service
 
             if (!result.Succeeded)
             {
-                
-                return ResponseFactory.Failure("Could not reset password.", result.Errors.ToList());
+                var errors = string.Join(", ", result.Errors);
+                return ResponseFactory.Failure($"Could not reset password: {errors}", result.Errors.ToList());
             }
 
             return ResponseFactory.Success("Password has been reset successfully.");

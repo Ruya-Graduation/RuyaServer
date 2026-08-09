@@ -19,7 +19,7 @@ namespace RUYA_API.Infrastructure.DependencyInjection
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             // 1. DbContext
             services.AddDbContext<RuyaContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("main")));
+                options.UseSqlServer(configuration.GetConnectionString("deployed")));
 
             // 2. Identity Registration (UserManager uses AppDbContext)
             services.AddIdentity<User, IdentityRole>()

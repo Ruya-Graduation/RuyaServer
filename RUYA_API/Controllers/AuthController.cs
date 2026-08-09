@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using RUYA_API.Application.Services.Auth.DTOs;
 using RUYA_API.Application.Services.Auth.Interfaces;
@@ -40,7 +40,7 @@ namespace RUYA_API.Controllers
         }
 
         [HttpPost("verify-otp")]
-        public async Task<IActionResult> ForgotPassword(VerifyOtpRequest request)
+        public async Task<IActionResult> VerifyOtp(VerifyOtpRequest request)
         {
             var response = await _authService.VerifyOtp(request);
             return Ok(response);
