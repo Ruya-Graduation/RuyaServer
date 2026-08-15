@@ -1,33 +1,75 @@
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Abstractions;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.Resource;
+using RUYA_API.Application.DependencyInjection;
+using RUYA_API.Infrastructure.Context;
+using RUYA_API.Infrastructure.DependencyInjection;
+using RUYA_API.Infrastructure.Identity.Seed;
+using RUYA_API.Middleware;
+using RUYA_API.Responses;
 
 namespace RUYA_API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-
+            
+            // Add CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+            
+            builder.Services.AddMemoryCache();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplication(builder.Configuration);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddControllers();
+            builder.Services.Configure<ApiBehaviorOptions>(options =>
+            {
+                options.InvalidModelStateResponseFactory = context =>
+                {
+                    var errors = context.ModelState
+                        .Values
+                        .SelectMany(v => v.Errors)
+                        .Select(e => e.ErrorMessage)
+                        .ToList();
+
+                    return new BadRequestObjectResult(
+                        ResponseFactory.Failure("Validation failed.", errors));
+                };
+            });
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+            
+            // Enable CORS
+            app.UseCors("AllowAll");
+            
+            app.UseMiddleware<ExceptionMiddleware>();
 
-            if (app.Environment.IsDevelopment())
+            //if (app.Environment.IsDevelopment())
             {
                 app.MapOpenApi();
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -43,7 +85,18 @@ namespace RUYA_API
                 });
             });
             app.MapControllers();
-
+            
+            // Seed roles and initial data
+            using (var scope = app.Services.CreateScope())
+            {
+                var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                RolesSeed.SeedRolesAsync(roleManager).GetAwaiter().GetResult();
+                
+                // Seed database with sites, artifacts, and admin user
+                // await RUYA_API.Infrastructure.Data.SeedDatabase.InitializeAsync(app.Services);
+                // Uncomment the line above to seed database on startup
+            }
+            
             app.Run();
         }
     }
