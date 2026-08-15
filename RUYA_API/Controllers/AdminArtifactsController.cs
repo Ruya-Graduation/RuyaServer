@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RUYA_API.Application.Services.Admin.DTOs.Artifact;
 using RUYA_API.Application.Services.Admin.Interfaces;
 using RUYA_API.Responses;
@@ -30,6 +31,7 @@ namespace RUYA_API.Controllers
             return Ok(ResponseFactory.Success(artifact, "Artifact retrieved successfully."));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateArtifactDto dto)
         {
@@ -40,6 +42,7 @@ namespace RUYA_API.Controllers
                 ResponseFactory.Success(artifact, "Artifact created successfully."));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
         public async Task<IActionResult> Update(int id, [FromForm] UpdateArtifactDto dto)
         {
@@ -47,6 +50,7 @@ namespace RUYA_API.Controllers
             return Ok(ResponseFactory.Success(message: "Artifact updated successfully."));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {

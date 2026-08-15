@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RUYA_API.Infrastructure.Context;
 
 #nullable disable
 
-namespace RUYA_API.Infrastructure.Migrations
+namespace RUYA_API.RUYA_API.Infrastructure.Migrations
 {
     [DbContext(typeof(RuyaContext))]
-    partial class RuyaContextModelSnapshot : ModelSnapshot
+    [Migration("20260813165817_TestAIIntegration")]
+    partial class TestAIIntegration
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -239,10 +242,6 @@ namespace RUYA_API.Infrastructure.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
-                    b.Property<string>("Material")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -252,10 +251,6 @@ namespace RUYA_API.Infrastructure.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
-
-                    b.Property<string>("PlaceOfDiscovery")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");

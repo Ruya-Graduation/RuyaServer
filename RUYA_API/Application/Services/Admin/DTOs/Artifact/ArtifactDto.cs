@@ -14,6 +14,10 @@
 
         public string Period { get; set; } = string.Empty;
 
+        public string Material { get; set; } = string.Empty;
+
+        public string PlaceOfDiscovery { get; set; } = string.Empty;
+
         public string ImageUrl { get; set; } = string.Empty;
     }
 }

@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RUYA_API.Infrastructure.Context;
 
 #nullable disable
 
-namespace RUYA_API.Infrastructure.Migrations
+namespace RUYA_API.RUYA_API.Infrastructure.Migrations
 {
     [DbContext(typeof(RuyaContext))]
-    partial class RuyaContextModelSnapshot : ModelSnapshot
+    [Migration("20260813174744_TestAIIntegrationV2updateArtifacts")]
+    partial class TestAIIntegrationV2updateArtifacts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

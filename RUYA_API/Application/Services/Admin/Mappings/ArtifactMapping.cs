@@ -15,7 +15,9 @@ namespace RUYA_API.Application.Services.Admin.Mappings
                 Category = artifact.Category,
                 Civilization = artifact.Civilization,
                 Period = artifact.Period,
-                ImageUrl = artifact.ImageUrl
+                ImageUrl = artifact.ImageUrl,
+                Material= artifact.Material,
+                PlaceOfDiscovery = artifact.PlaceOfDiscovery,
             };
         }
 

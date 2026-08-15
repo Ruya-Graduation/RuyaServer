@@ -20,6 +20,18 @@ namespace RUYA_API
         public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            
+            // Add CORS policy
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", policy =>
+                {
+                    policy.AllowAnyOrigin()
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+            
             builder.Services.AddMemoryCache();
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
@@ -45,6 +57,10 @@ namespace RUYA_API
             builder.Services.AddOpenApi();
 
             var app = builder.Build();
+            
+            // Enable CORS
+            app.UseCors("AllowAll");
+            
             app.UseMiddleware<ExceptionMiddleware>();
 
             //if (app.Environment.IsDevelopment())
@@ -69,11 +85,18 @@ namespace RUYA_API
                 });
             });
             app.MapControllers();
+            
+            // Seed roles and initial data
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 RolesSeed.SeedRolesAsync(roleManager).GetAwaiter().GetResult();
+                
+                // Seed database with sites, artifacts, and admin user
+                // await RUYA_API.Infrastructure.Data.SeedDatabase.InitializeAsync(app.Services);
+                // Uncomment the line above to seed database on startup
             }
+            
             app.Run();
         }
     }

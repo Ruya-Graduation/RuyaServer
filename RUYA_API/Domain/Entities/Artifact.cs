@@ -11,6 +11,8 @@ namespace RUYA_API.Domain.Entities
         public string Category { get; set; } = string.Empty;
         public string Civilization { get; set; } = string.Empty;
         public string Period { get; set; } = string.Empty;
+        public string Material { get; set; } = string.Empty;
+        public string PlaceOfDiscovery { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string ImagePublicId { get; set; } = string.Empty;
 
