@@ -52,8 +52,7 @@ namespace RUYA_API.Infrastructure.Data
                 UserName = adminEmail,
                 Email = adminEmail,
                 EmailConfirmed = true,
-                FirstName = "Admin",
-                LastName = "User",
+                FullName = "Admin",
                 PhoneNumber = "+1234567890"
             };
 
