@@ -18,6 +18,18 @@ namespace RUYA_API.Infrastructure.Configurations
             builder.Property(m => m.SummaryText)
                 .HasColumnType("text");
 
+            builder.Property(m => m.Title)
+                .HasMaxLength(200);
+
+            builder.Property(m => m.Year)
+                .IsRequired();
+
+            builder.Property(m => m.CoverImage)
+                .HasMaxLength(500);
+
+            builder.Property(m => m.TourId)
+                .IsRequired(false); // TourId is optional
+
             // MemoryAlbum -> AlbumItems: cascade (an album item has no meaning without its album)
             builder.HasMany(m => m.AlbumItems)
                 .WithOne(ai => ai.MemoryAlbum)

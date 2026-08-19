@@ -4,6 +4,8 @@ using RUYA_API.Application.Services.Auth.Interfaces;
 using RUYA_API.Application.Services.Auth.Service;
 using RUYA_API.Application.Services.Chat.Interfaces;
 using RUYA_API.Application.Services.Chat.Service;
+using RUYA_API.Application.Services.MemoryAlbum.Interfaces;
+using RUYA_API.Application.Services.MemoryAlbum.Service;
 
 namespace RUYA_API.Application.DependencyInjection
 {
@@ -17,6 +19,7 @@ namespace RUYA_API.Application.DependencyInjection
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<IArtifactService, ArtifactService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IMemoryAlbumService, MemoryAlbumService>();
 
             // (No MediatR, No FluentValidation, No Scanners needed for now!)
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));

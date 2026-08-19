@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RUYA_API.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using RUYA_API.Infrastructure.Context;
 namespace RUYA_API.Infrastructure.Migrations
 {
     [DbContext(typeof(RuyaContext))]
-    partial class RuyaContextModelSnapshot : ModelSnapshot
+    [Migration("20260819133608_AddMemoryAlbumMomentFields")]
+    partial class AddMemoryAlbumMomentFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -417,7 +420,7 @@ namespace RUYA_API.Infrastructure.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int?>("TourId")
+                    b.Property<int>("TourId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -874,7 +877,8 @@ namespace RUYA_API.Infrastructure.Migrations
                     b.HasOne("RUYA_API.Domain.Entities.Tour", "Tour")
                         .WithMany("MemoryAlbums")
                         .HasForeignKey("TourId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("RUYA_API.Domain.Entities.User", "User")
                         .WithMany("MemoryAlbums")

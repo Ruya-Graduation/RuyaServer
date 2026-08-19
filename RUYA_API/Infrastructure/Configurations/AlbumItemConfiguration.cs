@@ -18,6 +18,9 @@ namespace RUYA_API.Infrastructure.Configurations
             builder.Property(ai => ai.AiSummary)
                 .HasColumnType("text");
 
+            builder.Property(ai => ai.Label)
+                .HasMaxLength(100);
+
             // AlbumId FK relationship is configured from the MemoryAlbum side.
             // ArtifactId FK relationship is configured from the Artifact side.
         }

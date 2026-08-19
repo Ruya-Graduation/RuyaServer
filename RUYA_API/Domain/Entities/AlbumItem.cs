@@ -12,5 +12,6 @@ namespace RUYA_API.Domain.Entities
 
         public string PhotoUrl { get; set; } = string.Empty;
         public string AiSummary { get; set; } = string.Empty;
+        public string Label { get; set; } = string.Empty;
     }
 }
