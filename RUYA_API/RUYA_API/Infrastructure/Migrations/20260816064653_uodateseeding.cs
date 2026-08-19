@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace RUYA_API.Data.Migrations
+namespace RUYA_API.RUYA_API.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class YourMigrationName : Migration
+    public partial class uodateseeding : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

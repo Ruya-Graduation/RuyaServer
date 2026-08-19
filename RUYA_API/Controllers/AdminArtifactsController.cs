@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using RUYA_API.Application.Common;
 using RUYA_API.Application.Services.Admin.DTOs.Artifact;
 using RUYA_API.Application.Services.Admin.Interfaces;
 using RUYA_API.Responses;
@@ -31,7 +33,7 @@ namespace RUYA_API.Controllers
             return Ok(ResponseFactory.Success(artifact, "Artifact retrieved successfully."));
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm] CreateArtifactDto dto)
         {
@@ -50,13 +52,21 @@ namespace RUYA_API.Controllers
             return Ok(ResponseFactory.Success(message: "Artifact updated successfully."));
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = Roles.Admin)]
         [HttpDelete("{id:int}")]
         public async Task<IActionResult> Delete(int id)
         {
             await _artifactService.DeleteAsync(id);
 
             return Ok(ResponseFactory.Success("Artifact deleted successfully."));
+        }
+
+        [Authorize]
+        [HttpGet("debug-claims")]
+        public IActionResult DebugClaims()
+        {
+            var claims = User.Claims.Select(c => new { c.Type, c.Value });
+            return Ok(claims);
         }
     }
 }

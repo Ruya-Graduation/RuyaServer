@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RUYA_API.Domain.Entities;
 
-namespace RUYA_API.Infrastructure.Persistence.Configurations
+namespace RUYA_API.Infrastructure.Configurations
 {
     public class ArtifactConfiguration : IEntityTypeConfiguration<Artifact>
     {
@@ -27,6 +27,12 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
             builder.Property(a => a.Period)
                 .IsRequired()
                 .HasMaxLength(100);
+
+            builder.Property(a => a.Material)
+                .HasMaxLength(200);
+
+            builder.Property(a => a.PlaceOfDiscovery)
+                .HasMaxLength(200);
 
             builder.Property(a => a.ImagePublicId)
                 .HasMaxLength(300);

@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using RUYA_API.Application.Services.Chat.DTOs;
 using RUYA_API.Application.Services.Chat.Interfaces;
 using RUYA_API.Responses;
 using System.Security.Claims;
 
+
 namespace RUYA_API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize]
+    [Authorize]
     public class ChatController : ControllerBase
+
     {
         private readonly IChatService _chatService;
 

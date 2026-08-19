@@ -37,7 +37,6 @@ namespace RUYA_API.Infrastructure.Services
 
             var token = new JwtSecurityToken(
                 issuer: _jwtSettings.Issuer,
-            audience: _jwtSettings.Audience,
             claims: claims,
             expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiryMinutes),
             signingCredentials: creds

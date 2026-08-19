@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RUYA_API.Domain.Entities;
 
-namespace RUYA_API.Infrastructure.Persistence.Configurations
+namespace RUYA_API.Infrastructure.Configurations
 {
     public class MemoryAlbumConfiguration : IEntityTypeConfiguration<MemoryAlbum>
     {

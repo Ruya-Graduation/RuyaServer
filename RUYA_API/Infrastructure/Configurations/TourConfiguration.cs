@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RUYA_API.Domain.Entities;
 
-namespace RUYA_API.Infrastructure.Persistence.Configurations
+namespace RUYA_API.Infrastructure.Configurations
 {
     public class TourConfiguration : IEntityTypeConfiguration<Tour>
     {
@@ -19,6 +19,7 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
 
             builder.Property(t => t.Status)
                 .IsRequired()
+                .HasConversion<string>()
                 .HasMaxLength(50);
 
             // Tour -> TourStops: cascade (a stop has no meaning without its tour)
