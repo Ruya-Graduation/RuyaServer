@@ -65,7 +65,11 @@ namespace RUYA_API.Infrastructure.Data
             Console.WriteLine();
             
             var options = new DbContextOptionsBuilder<RuyaContext>()
-                .UseSqlServer(connectionString)
+                .UseSqlServer(connectionString,
+                    sqlOptions => sqlOptions.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(10),
+                        errorNumbersToAdd: null))
                 .Options;
 
             using var context = new RuyaContext(options);

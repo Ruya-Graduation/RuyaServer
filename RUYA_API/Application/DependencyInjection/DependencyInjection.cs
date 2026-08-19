@@ -16,6 +16,7 @@ namespace RUYA_API.Application.DependencyInjection
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<IArtifactService, ArtifactService>();
+            services.AddScoped<IDashboardService, DashboardService>();
 
             // (No MediatR, No FluentValidation, No Scanners needed for now!)
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));
