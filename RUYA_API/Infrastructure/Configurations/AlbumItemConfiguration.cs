@@ -13,16 +13,26 @@ namespace RUYA_API.Infrastructure.Configurations
             builder.HasKey(ai => ai.Id);
 
             builder.Property(ai => ai.PhotoUrl)
+                .IsRequired()
                 .HasMaxLength(500);
+
+            builder.Property(ai => ai.PublicId)
+                .HasMaxLength(300);
+
+            builder.Property(ai => ai.Caption)
+                .HasMaxLength(500);
+
+            builder.Property(ai => ai.DayLabel)
+                .HasMaxLength(50);
 
             builder.Property(ai => ai.AiSummary)
                 .HasColumnType("text");
 
-            builder.Property(ai => ai.Label)
-                .HasMaxLength(100);
+            builder.Property(ai => ai.ArtifactId)
+                .IsRequired(false);
 
-            // AlbumId FK relationship is configured from the MemoryAlbum side.
-            // ArtifactId FK relationship is configured from the Artifact side.
+            // AlbumId FK relationship configured from MemoryAlbum side
+            // ArtifactId FK relationship configured from Artifact side with SetNull behavior
         }
     }
 }

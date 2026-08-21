@@ -12,23 +12,22 @@ namespace RUYA_API.Infrastructure.Configurations
 
             builder.HasKey(m => m.Id);
 
-            builder.Property(m => m.GeneratedAt)
-                .IsRequired();
-
-            builder.Property(m => m.SummaryText)
-                .HasColumnType("text");
-
             builder.Property(m => m.Title)
+                .IsRequired()
                 .HasMaxLength(200);
 
-            builder.Property(m => m.Year)
-                .IsRequired();
+            builder.Property(m => m.StartDate)
+                .IsRequired()
+                .HasMaxLength(50);
 
             builder.Property(m => m.CoverImage)
                 .HasMaxLength(500);
 
+            builder.Property(m => m.SummaryText)
+                .HasColumnType("text");
+
             builder.Property(m => m.TourId)
-                .IsRequired(false); // TourId is optional
+                .IsRequired(false);
 
             // MemoryAlbum -> AlbumItems: cascade (an album item has no meaning without its album)
             builder.HasMany(m => m.AlbumItems)
@@ -36,8 +35,8 @@ namespace RUYA_API.Infrastructure.Configurations
                 .HasForeignKey(ai => ai.AlbumId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // UserId and TourId FK relationships are configured from
-            // the User and Tour sides respectively.
+            // UserId FK relationship configured from User side
+            // TourId FK relationship configured from Tour side with SetNull behavior
         }
     }
 }

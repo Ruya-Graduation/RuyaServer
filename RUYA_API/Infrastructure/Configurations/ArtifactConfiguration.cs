@@ -46,11 +46,11 @@ namespace RUYA_API.Infrastructure.Configurations
                 .HasForeignKey(ts => ts.ArtifactId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Artifact -> AlbumItems: restrict (same reasoning)
+            // Artifact -> AlbumItems: set null (photos can exist without artifact reference)
             builder.HasMany(a => a.AlbumItems)
                 .WithOne(ai => ai.Artifact)
                 .HasForeignKey(ai => ai.ArtifactId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Artifact <-> Source: many-to-many (verified_by), implicit join table "ArtifactSources"
             builder.HasMany(a => a.Sources)

@@ -28,11 +28,11 @@ namespace RUYA_API.Infrastructure.Configurations
                 .HasForeignKey(ts => ts.TourId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // Tour -> MemoryAlbums: restrict
+            // Tour -> MemoryAlbums: set null (albums can exist without a tour)
             builder.HasMany(t => t.MemoryAlbums)
                 .WithOne(m => m.Tour)
                 .HasForeignKey(m => m.TourId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
         }
     }
 }
