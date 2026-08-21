@@ -18,7 +18,8 @@ namespace RUYA_API.Application.Services.Admin.Mappings
                 Hours = site.Hours,
                 Ticket = site.Ticket,
                 Crowds = site.Crowds,
-                Description = site.Description
+                Description = site.Description,
+                ImageUrl = site.ImageUrl
             };
         }
 
@@ -34,7 +35,9 @@ namespace RUYA_API.Application.Services.Admin.Mappings
                 Hours = dto.Hours,
                 Ticket = dto.Ticket,
                 Crowds = dto.Crowds,
-                Description = dto.Description
+                Description = dto.Description,
+                ImageUrl = string.Empty,
+                ImagePublicId = string.Empty
             };
         }
 

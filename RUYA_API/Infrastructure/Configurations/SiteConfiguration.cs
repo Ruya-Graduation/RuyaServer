@@ -42,6 +42,12 @@ namespace RUYA_API.Infrastructure.Configurations
             builder.Property(s => s.Description)
                 .HasMaxLength(2000);
 
+            builder.Property(s => s.ImageUrl)
+                .HasMaxLength(500);
+
+            builder.Property(s => s.ImagePublicId)
+                .HasMaxLength(300);
+
             // Site -> Artifacts: cascade (artifact has no meaning without its site)
             builder.HasMany(s => s.Artifacts)
                 .WithOne(a => a.Site)

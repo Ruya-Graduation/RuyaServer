@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RUYA_API.Infrastructure.Context;
 
@@ -11,9 +12,11 @@ using RUYA_API.Infrastructure.Context;
 namespace RUYA_API.Infrastructure.Migrations
 {
     [DbContext(typeof(RuyaContext))]
-    partial class RuyaContextModelSnapshot : ModelSnapshot
+    [Migration("20260821124733_AddSiteImageSupport")]
+    partial class AddSiteImageSupport
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
