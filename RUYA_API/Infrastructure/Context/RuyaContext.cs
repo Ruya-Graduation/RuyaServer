@@ -22,6 +22,7 @@ namespace RUYA_API.Infrastructure.Context
         public DbSet<MemoryAlbum> MemoryAlbums => Set<MemoryAlbum>();
         public DbSet<AlbumItem> AlbumItems => Set<AlbumItem>();
         public DbSet<ConversationAttachment> ConversationAttachments => Set<ConversationAttachment>();
+        public DbSet<Reservation> Reservations => Set<Reservation>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
