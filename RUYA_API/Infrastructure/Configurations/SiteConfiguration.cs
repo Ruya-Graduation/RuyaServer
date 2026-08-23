@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RUYA_API.Domain.Entities;
 
-namespace RUYA_API.Infrastructure.Persistence.Configurations
+namespace RUYA_API.Infrastructure.Configurations
 {
     public class SiteConfiguration : IEntityTypeConfiguration<Site>
     {
@@ -41,6 +41,12 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
 
             builder.Property(s => s.Description)
                 .HasMaxLength(2000);
+
+            builder.Property(s => s.ImageUrl)
+                .HasMaxLength(500);
+
+            builder.Property(s => s.ImagePublicId)
+                .HasMaxLength(300);
 
             // Site -> Artifacts: cascade (artifact has no meaning without its site)
             builder.HasMany(s => s.Artifacts)

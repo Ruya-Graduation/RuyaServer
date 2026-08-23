@@ -4,6 +4,10 @@ using RUYA_API.Application.Services.Auth.Interfaces;
 using RUYA_API.Application.Services.Auth.Service;
 using RUYA_API.Application.Services.Chat.Interfaces;
 using RUYA_API.Application.Services.Chat.Service;
+using RUYA_API.Application.Services.Moments.Interfaces;
+using RUYA_API.Application.Services.Moments.Service;
+using RUYA_API.Application.Services.Reservations.Interfaces;
+using RUYA_API.Application.Services.Reservations.Service;
 
 namespace RUYA_API.Application.DependencyInjection
 {
@@ -17,6 +21,8 @@ namespace RUYA_API.Application.DependencyInjection
             services.AddScoped<ISiteService, SiteService>();
             services.AddScoped<IArtifactService, ArtifactService>();
             services.AddScoped<IDashboardService, DashboardService>();
+            services.AddScoped<IMomentsService, MomentsService>();
+            services.AddScoped<IReservationService, ReservationService>();
 
             // (No MediatR, No FluentValidation, No Scanners needed for now!)
             services.Configure<EmailSettings>(configuration.GetSection("EmailSettings"));

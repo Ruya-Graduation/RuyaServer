@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RUYA_API.Application.Common.Interfaces;
 using RUYA_API.Application.Services.Admin.DTOs.Site;
 using RUYA_API.Application.Services.Admin.Interfaces;
 using RUYA_API.Application.Services.Admin.Mappings;
@@ -10,10 +11,14 @@ namespace RUYA_API.Application.Services.Admin.Service
     public class SiteService : ISiteService
     {
         private readonly RuyaContext _context;
+        private readonly IImageService _imageService;
 
-        public SiteService(RuyaContext context)
+        public SiteService(
+            RuyaContext context,
+            IImageService imageService)
         {
             _context = context;
+            _imageService = imageService;
         }
 
         public async Task<IEnumerable<SiteDto>> GetAllAsync()
@@ -43,6 +48,14 @@ namespace RUYA_API.Application.Services.Admin.Service
 
             var site = dto.ToEntity();
 
+            if (dto.Image is not null)
+            {
+                var uploadResult = await _imageService.UploadImageAsync(dto.Image);
+
+                site.ImageUrl = uploadResult.ImageUrl;
+                site.ImagePublicId = uploadResult.PublicId;
+            }
+
             _context.Sites.Add(site);
 
             await _context.SaveChangesAsync();
@@ -62,6 +75,19 @@ namespace RUYA_API.Application.Services.Admin.Service
 
             dto.UpdateEntity(site);
 
+            if (dto.Image is not null)
+            {
+                if (!string.IsNullOrWhiteSpace(site.ImagePublicId))
+                {
+                    await _imageService.DeleteImageAsync(site.ImagePublicId);
+                }
+
+                var uploadResult = await _imageService.UploadImageAsync(dto.Image);
+
+                site.ImageUrl = uploadResult.ImageUrl;
+                site.ImagePublicId = uploadResult.PublicId;
+            }
+
             await _context.SaveChangesAsync();
         }
 
@@ -76,6 +102,11 @@ namespace RUYA_API.Application.Services.Admin.Service
 
             try
             {
+                if (!string.IsNullOrWhiteSpace(site.ImagePublicId))
+                {
+                    await _imageService.DeleteImageAsync(site.ImagePublicId);
+                }
+
                 _context.Sites.Remove(site);
                 await _context.SaveChangesAsync();
             }

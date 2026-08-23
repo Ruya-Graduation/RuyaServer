@@ -33,7 +33,7 @@ namespace RUYA_API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create(CreateSiteDto dto)
+        public async Task<IActionResult> Create([FromForm] CreateSiteDto dto)
         {
             var site = await _siteService.CreateAsync(dto);
 
@@ -44,7 +44,7 @@ namespace RUYA_API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}")]
-        public async Task<IActionResult> Update(int id, UpdateSiteDto dto)
+        public async Task<IActionResult> Update(int id, [FromForm] UpdateSiteDto dto)
         {
             await _siteService.UpdateAsync(id, dto);
             return Ok(ResponseFactory.Success(message: "Site updated successfully."));

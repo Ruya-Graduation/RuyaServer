@@ -127,10 +127,10 @@ namespace RUYA_API.Application.Services.Chat.Service
                     visionResult?.Confidence ?? 0,
                     confidenceThreshold);
 
-                // Check confidence threshold
-                if (visionResult == null || !visionResult.IsSuccess || visionResult.Confidence < confidenceThreshold)
+                // Check confidence threshold and detection validity
+                if (visionResult == null || string.IsNullOrWhiteSpace(visionResult.ArtifactId) || visionResult.Confidence < confidenceThreshold)
                 {
-                    // Low confidence - return clarification message
+                    // Low confidence or no detection - return clarification message
                     await _sessionRepository.UpdateAsync(conversation);
 
                     var clarificationResponse = new ChatResponseDto

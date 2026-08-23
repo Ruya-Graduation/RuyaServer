@@ -2,7 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RUYA_API.Domain.Entities;
 
-namespace RUYA_API.Infrastructure.Persistence.Configurations
+namespace RUYA_API.Infrastructure.Configurations
 {
     public class ArtifactConfiguration : IEntityTypeConfiguration<Artifact>
     {
@@ -28,6 +28,12 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
                 .IsRequired()
                 .HasMaxLength(100);
 
+            builder.Property(a => a.Material)
+                .HasMaxLength(200);
+
+            builder.Property(a => a.PlaceOfDiscovery)
+                .HasMaxLength(200);
+
             builder.Property(a => a.ImagePublicId)
                 .HasMaxLength(300);
 
@@ -40,11 +46,11 @@ namespace RUYA_API.Infrastructure.Persistence.Configurations
                 .HasForeignKey(ts => ts.ArtifactId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Artifact -> AlbumItems: restrict (same reasoning)
+            // Artifact -> AlbumItems: set null (photos can exist without artifact reference)
             builder.HasMany(a => a.AlbumItems)
                 .WithOne(ai => ai.Artifact)
                 .HasForeignKey(ai => ai.ArtifactId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.SetNull);
 
             // Artifact <-> Source: many-to-many (verified_by), implicit join table "ArtifactSources"
             builder.HasMany(a => a.Sources)

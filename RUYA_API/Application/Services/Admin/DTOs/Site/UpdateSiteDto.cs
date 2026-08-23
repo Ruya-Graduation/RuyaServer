@@ -33,5 +33,7 @@ namespace RUYA_API.Application.Services.Admin.DTOs.Site
 
         [MaxLength(2000)]
         public string Description { get; set; } = string.Empty;
+
+        public IFormFile? Image { get; set; }
     }
 }

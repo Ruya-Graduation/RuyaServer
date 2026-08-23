@@ -9,18 +9,18 @@ using RUYA_API.Infrastructure.Context;
 
 #nullable disable
 
-namespace RUYA_API.Data.Migrations
+namespace RUYA_API.Infrastructure.Migrations
 {
     [DbContext(typeof(RuyaContext))]
-    [Migration("20260813165730_YourMigrationName")]
-    partial class YourMigrationName
+    [Migration("20260821004354_AddFreeformMomentsAlbums")]
+    partial class AddFreeformMomentsAlbums
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "10.0.10")
+                .HasAnnotation("ProductVersion", "10.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -182,22 +182,33 @@ namespace RUYA_API.Data.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AiSummary")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("AlbumId")
                         .HasColumnType("int");
 
-                    b.Property<int>("ArtifactId")
+                    b.Property<int?>("ArtifactId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Caption")
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("DayLabel")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("PhotoUrl")
                         .IsRequired()
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
+
+                    b.Property<string>("PublicId")
+                        .HasMaxLength(300)
+                        .HasColumnType("nvarchar(300)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -242,6 +253,11 @@ namespace RUYA_API.Data.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<string>("Material")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(200)
@@ -251,6 +267,11 @@ namespace RUYA_API.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("PlaceOfDiscovery")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
 
                     b.Property<int>("SiteId")
                         .HasColumnType("int");
@@ -385,17 +406,28 @@ namespace RUYA_API.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CoverImage")
+                        .IsRequired()
+                        .HasMaxLength(500)
+                        .HasColumnType("nvarchar(500)");
+
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("GeneratedAt")
-                        .HasColumnType("datetime2");
+                    b.Property<string>("StartDate")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("SummaryText")
-                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("TourId")
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasMaxLength(200)
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int?>("TourId")
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("UpdatedAt")
@@ -536,9 +568,10 @@ namespace RUYA_API.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("nvarchar(200)");
 
-                    b.Property<int>("TrustLevel")
+                    b.Property<string>("TrustLevel")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<string>("Type")
                         .IsRequired()
@@ -578,9 +611,10 @@ namespace RUYA_API.Data.Migrations
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("Status")
+                    b.Property<string>("Status")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("int");
+                        .HasColumnType("nvarchar(50)");
 
                     b.Property<DateTime?>("UpdatedAt")
                         .HasColumnType("datetime2");
@@ -788,8 +822,7 @@ namespace RUYA_API.Data.Migrations
                     b.HasOne("RUYA_API.Domain.Entities.Artifact", "Artifact")
                         .WithMany("AlbumItems")
                         .HasForeignKey("ArtifactId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Artifact");
 
@@ -847,8 +880,7 @@ namespace RUYA_API.Data.Migrations
                     b.HasOne("RUYA_API.Domain.Entities.Tour", "Tour")
                         .WithMany("MemoryAlbums")
                         .HasForeignKey("TourId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("RUYA_API.Domain.Entities.User", "User")
                         .WithMany("MemoryAlbums")

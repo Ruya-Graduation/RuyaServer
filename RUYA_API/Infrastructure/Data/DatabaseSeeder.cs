@@ -52,8 +52,10 @@ namespace RUYA_API.Infrastructure.Data
                 UserName = adminEmail,
                 Email = adminEmail,
                 EmailConfirmed = true,
-                FullName = "Admin",
-                PhoneNumber = "+1234567890"
+                PhoneNumber = "+1234567890",
+                FullName = "System Administrator",
+                PreferredLanguage = "en",
+                KnowledgeLevel = "Expert"
             };
 
             var result = await _userManager.CreateAsync(adminUser, adminPassword);

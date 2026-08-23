@@ -23,11 +23,8 @@ namespace RUYA_API.Infrastructure.DependencyInjection
             services.Configure<JwtSettings>(configuration.GetSection("JwtSettings"));
             // 1. DbContext
             services.AddDbContext<RuyaContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("main"),
-                    sqlOptions => sqlOptions.EnableRetryOnFailure(
-                        maxRetryCount: 5,
-                        maxRetryDelay: TimeSpan.FromSeconds(10),
-                        errorNumbersToAdd: null)));
+
+                options.UseSqlServer(configuration.GetConnectionString("deployed")));
 
             // 2. Identity Registration (UserManager uses AppDbContext)
             services.AddIdentity<User, IdentityRole>()
@@ -53,13 +50,13 @@ namespace RUYA_API.Infrastructure.DependencyInjection
 
             services.AddHttpClient<IVisionAiClient, VisionAiClient>(client =>
             {
-                client.BaseAddress = new Uri(aiSettings.BaseUrl);
+                client.BaseAddress = new Uri(aiSettings.VisionBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(30);
             });
 
             services.AddHttpClient<IChatAiClient, ChatAiClient>(client =>
             {
-                client.BaseAddress = new Uri(aiSettings.BaseUrl);
+                client.BaseAddress = new Uri(aiSettings.ChatBaseUrl);
                 client.Timeout = TimeSpan.FromSeconds(60);
             });
 

@@ -1,17 +1,16 @@
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Identity.Abstractions;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.Resource;
+using Microsoft.IdentityModel.Tokens;
 using RUYA_API.Application.DependencyInjection;
-using RUYA_API.Infrastructure.Context;
+using RUYA_API.Infrastructure.Common;
+using RUYA_API.Infrastructure.Data;
 using RUYA_API.Infrastructure.DependencyInjection;
 using RUYA_API.Infrastructure.Identity.Seed;
 using RUYA_API.Middleware;
 using RUYA_API.Responses;
+using System.Security.Claims;
+using System.Text;
 
 namespace RUYA_API
 {
@@ -33,12 +32,58 @@ namespace RUYA_API
             });
             
             builder.Services.AddMemoryCache();
-            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-                .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+
+            var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>()
+                 ?? throw new InvalidOperationException("JwtSettings section is missing.");
+
             builder.Services.AddInfrastructure(builder.Configuration);
             builder.Services.AddApplication(builder.Configuration);
+            builder.Services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme; // Add this
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters
+                {
+                    // 1. Validate the Issuer
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtSettings.Issuer, // <-- REQUIRED: Must match the issuer in your generator
+
+                    // 2. Validate the Signature
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey!)), // <-- REQUIRED: The key to verify the token
+
+                    // 3. Validate Lifetime (Expiration)
+                    ValidateLifetime = true,
+
+                    // 4. Audience (Set to false since you don't generate an audience in your generator)
+                    ValidateAudience = false,
+
+                    ClockSkew = TimeSpan.FromSeconds(30)
+                };
+                // ADD THIS ENTIRE BLOCK TO SEE THE ERROR IN YOUR CONSOLE
+                options.Events = new JwtBearerEvents
+                {
+                    OnAuthenticationFailed = context =>
+                    {
+                        Console.WriteLine("❌ JWT AUTH FAILED: " + context.Exception.Message);
+                        return Task.CompletedTask;
+                    },
+                    OnMessageReceived = context =>
+                    {
+                        Console.WriteLine("📩 JWT RECEIVED HEADER: " + context.Request.Headers.Authorization);
+                        return Task.CompletedTask;
+                    }
+                };
+
+            });
+
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+
             builder.Services.AddControllers();
             builder.Services.Configure<ApiBehaviorOptions>(options =>
             {
@@ -60,6 +105,8 @@ namespace RUYA_API
             
             // Enable CORS
             app.UseCors("AllowAll");
+            app.UseAuthentication();
+            app.UseAuthorization();
             
             app.UseMiddleware<ExceptionMiddleware>();
 
@@ -69,10 +116,7 @@ namespace RUYA_API
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
 
             app.MapGet("/api", () =>
             {
@@ -90,11 +134,10 @@ namespace RUYA_API
             using (var scope = app.Services.CreateScope())
             {
                 var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-                RolesSeed.SeedRolesAsync(roleManager).GetAwaiter().GetResult();
+                await RolesSeed.SeedRolesAsync(roleManager);
                 
                 // Seed database with sites, artifacts, and admin user
-                // await RUYA_API.Infrastructure.Data.SeedDatabase.InitializeAsync(app.Services);
-                // Uncomment the line above to seed database on startup
+                await SeedDatabase.InitializeAsync(app.Services);
             }
             
             app.Run();
