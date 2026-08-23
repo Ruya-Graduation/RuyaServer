@@ -12,33 +12,17 @@ namespace RUYA_API.Infrastructure.Configurations
 
             builder.HasKey(a => a.Id);
 
-            builder.Property(a => a.Name)
-                .IsRequired()
-                .HasMaxLength(200);
-
-            builder.Property(a => a.Category)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(a => a.Civilization)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(a => a.Period)
-                .IsRequired()
-                .HasMaxLength(100);
-
-            builder.Property(a => a.Material)
-                .HasMaxLength(200);
-
-            builder.Property(a => a.PlaceOfDiscovery)
-                .HasMaxLength(200);
-
             builder.Property(a => a.ImagePublicId)
                 .HasMaxLength(300);
 
             builder.Property(a => a.ImageUrl)
                 .HasMaxLength(500);
+
+            // Artifact -> Translations: cascade (translations have no meaning without their artifact)
+            builder.HasMany(a => a.Translations)
+                .WithOne(at => at.Artifact)
+                .HasForeignKey(at => at.ArtifactId)
+                .OnDelete(DeleteBehavior.Cascade);
 
             // Artifact -> TourStops: restrict (deleting an artifact shouldn't erase visit history)
             builder.HasMany(a => a.TourStops)

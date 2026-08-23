@@ -12,7 +12,9 @@ namespace RUYA_API.Infrastructure.Context
         }
 
         public DbSet<Site> Sites => Set<Site>();
+        public DbSet<SiteTranslation> SiteTranslations => Set<SiteTranslation>();
         public DbSet<Artifact> Artifacts => Set<Artifact>();
+        public DbSet<ArtifactTranslation> ArtifactTranslations => Set<ArtifactTranslation>();
         public DbSet<User> Users => Set<User>();
         public DbSet<Tour> Tours => Set<Tour>();
         public DbSet<Source> Sources => Set<Source>();

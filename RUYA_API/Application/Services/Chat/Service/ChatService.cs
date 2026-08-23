@@ -208,7 +208,8 @@ namespace RUYA_API.Application.Services.Chat.Service
 
             if (artifactId.HasValue)
             {
-                var artifact = await _artifactService.GetByIdAsync(artifactId.Value);
+                // Use English as default language for RAG context
+                var artifact = await _artifactService.GetByIdAsync(artifactId.Value, "en");
                 if (artifact != null)
                 {
                     artifactContext = new ArtifactContextDto
@@ -299,8 +300,8 @@ namespace RUYA_API.Application.Services.Chat.Service
             {
                 _logger.LogInformation("🔍 Resolving artifact by name: '{ArtifactName}'", artifactName);
                 
-                // Fetch all artifacts and find by name (case-insensitive)
-                var allArtifacts = await _artifactService.GetAllAsync();
+                // Fetch all artifacts using English as the default language for name matching
+                var allArtifacts = await _artifactService.GetAllAsync("en");
                 
                 _logger.LogInformation("📊 Total artifacts in database: {Count}", allArtifacts.Count());
                 

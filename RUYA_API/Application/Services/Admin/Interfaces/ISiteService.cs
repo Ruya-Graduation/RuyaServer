@@ -4,9 +4,9 @@ namespace RUYA_API.Application.Services.Admin.Interfaces
 {
     public interface ISiteService
     {
-        Task<IEnumerable<SiteDto>> GetAllAsync();
+        Task<IEnumerable<SiteDto>> GetAllAsync(string languageCode);
 
-        Task<SiteDto?> GetByIdAsync(int id);
+        Task<SiteDto?> GetByIdAsync(int id, string languageCode);
 
         Task<SiteDto> CreateAsync(CreateSiteDto dto);
 

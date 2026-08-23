@@ -114,8 +114,10 @@ namespace RUYA_API.Application.Services.Admin.Service
         public async Task<IEnumerable<ChartPointDto>> GetArtifactsByCategoryAsync()
         {
             var data = await _context.Artifacts
+                .Include(a => a.Translations.Where(t => t.LanguageCode == "en"))
                 .AsNoTracking()
-                .GroupBy(a => a.Category)
+                .SelectMany(a => a.Translations.Where(t => t.LanguageCode == "en"), (a, t) => t.Category)
+                .GroupBy(category => category)
                 .Select(g => new { Category = g.Key, Count = g.Count() })
                 .ToListAsync();
 
@@ -130,8 +132,10 @@ namespace RUYA_API.Application.Services.Admin.Service
         public async Task<IEnumerable<ChartPointDto>> GetArtifactsByCivilizationAsync()
         {
             var data = await _context.Artifacts
+                .Include(a => a.Translations.Where(t => t.LanguageCode == "en"))
                 .AsNoTracking()
-                .GroupBy(a => a.Civilization)
+                .SelectMany(a => a.Translations.Where(t => t.LanguageCode == "en"), (a, t) => t.Civilization)
+                .GroupBy(civilization => civilization)
                 .Select(g => new { Civilization = g.Key, Count = g.Count() })
                 .ToListAsync();
 
@@ -146,8 +150,13 @@ namespace RUYA_API.Application.Services.Admin.Service
         public async Task<IEnumerable<ChartPointDto>> GetTopSitesAsync(int count = 5)
         {
             var data = await _context.Sites
+                .Include(s => s.Translations.Where(t => t.LanguageCode == "en"))
                 .AsNoTracking()
-                .Select(s => new { s.Name, Tours = s.Tours.Count })
+                .Select(s => new 
+                { 
+                    Name = s.Translations.FirstOrDefault(t => t.LanguageCode == "en")!.Name, 
+                    Tours = s.Tours.Count 
+                })
                 .OrderByDescending(x => x.Tours)
                 .Take(count)
                 .ToListAsync();
@@ -172,9 +181,13 @@ namespace RUYA_API.Application.Services.Admin.Service
             var artifactIds = top.Select(t => t.ArtifactId).ToList();
 
             var artifacts = await _context.Artifacts
+                .Include(a => a.Translations.Where(t => t.LanguageCode == "en"))
                 .AsNoTracking()
                 .Where(a => artifactIds.Contains(a.Id))
-                .ToDictionaryAsync(a => a.Id, a => a.Name);
+                .ToDictionaryAsync(
+                    a => a.Id, 
+                    a => a.Translations.FirstOrDefault(t => t.LanguageCode == "en")!.Name
+                );
 
             var result = top.Select(t => new ChartPointDto
             {
