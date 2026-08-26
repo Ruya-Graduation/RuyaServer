@@ -20,16 +20,16 @@ namespace RUYA_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string lang = "en")
         {
-            var artifacts = await _artifactService.GetAllAsync();
+            var artifacts = await _artifactService.GetAllAsync(lang);
             return Ok(ResponseFactory.Success(artifacts, "Artifacts retrieved successfully."));
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int id, [FromQuery] string lang = "en")
         {
-            var artifact = await _artifactService.GetByIdAsync(id);
+            var artifact = await _artifactService.GetByIdAsync(id, lang);
             return Ok(ResponseFactory.Success(artifact, "Artifact retrieved successfully."));
         }
 

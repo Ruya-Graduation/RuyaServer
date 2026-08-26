@@ -7,15 +7,10 @@ namespace RUYA_API.Domain.Entities
         public int SiteId { get; set; }
         public Site Site { get; set; } = null!;
 
-        public string Name { get; set; } = string.Empty;
-        public string Category { get; set; } = string.Empty;
-        public string Civilization { get; set; } = string.Empty;
-        public string Period { get; set; } = string.Empty;
-        public string Material { get; set; } = string.Empty;
-        public string PlaceOfDiscovery { get; set; } = string.Empty;
         public string ImageUrl { get; set; } = string.Empty;
         public string ImagePublicId { get; set; } = string.Empty;
 
+        public ICollection<ArtifactTranslation> Translations { get; set; } = new List<ArtifactTranslation>();
         public ICollection<TourStop> TourStops { get; set; } = new List<TourStop>();
         public ICollection<AlbumItem> AlbumItems { get; set; } = new List<AlbumItem>();
 

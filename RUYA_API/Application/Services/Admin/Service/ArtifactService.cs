@@ -21,30 +21,37 @@ namespace RUYA_API.Application.Services.Admin.Service
             _imageService = imageService;
         }
 
-        public async Task<IEnumerable<ArtifactDto>> GetAllAsync()
+        public async Task<IEnumerable<ArtifactDto>> GetAllAsync(string languageCode)
         {
+            ValidateLanguageCode(languageCode);
+
             var artifacts = await _context.Artifacts
+                .Include(a => a.Translations)
                 .AsNoTracking()
                 .ToListAsync();
 
-            return artifacts.Select(a => a.ToDto());
+            return artifacts.Select(a => a.ToDto(languageCode));
         }
 
-        public async Task<ArtifactDto?> GetByIdAsync(int id)
+        public async Task<ArtifactDto?> GetByIdAsync(int id, string languageCode)
         {
+            ValidateLanguageCode(languageCode);
+
             var artifact = await _context.Artifacts
+                .Include(a => a.Translations)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (artifact is null)
                 throw new AppException($"Artifact with Id {id} was not found.", StatusCodes.Status404NotFound);
 
-            return artifact.ToDto();
+            return artifact.ToDto(languageCode);
         }
 
         public async Task<ArtifactDto> CreateAsync(CreateArtifactDto dto)
         {
             await ValidateArtifact(dto);
+            ValidateTranslations(dto.Translations);
 
             var artifact = dto.ToEntity();
 
@@ -60,14 +67,21 @@ namespace RUYA_API.Application.Services.Admin.Service
 
             await _context.SaveChangesAsync();
 
-            return artifact.ToDto();
+            // Return with English translation by default
+            var createdArtifact = await _context.Artifacts
+                .Include(a => a.Translations)
+                .FirstAsync(a => a.Id == artifact.Id);
+
+            return createdArtifact.ToDto("en");
         }
 
         public async Task UpdateAsync(int id, UpdateArtifactDto dto)
         {
             await ValidateArtifact(dto);
+            ValidateTranslations(dto.Translations);
 
             var artifact = await _context.Artifacts
+                .Include(a => a.Translations)
                 .FirstOrDefaultAsync(a => a.Id == id);
 
             if (artifact is null)
@@ -119,20 +133,38 @@ namespace RUYA_API.Application.Services.Admin.Service
 
         private async Task ValidateArtifact(CreateArtifactDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Name))
-                throw new AppException("Artifact name is required.", StatusCodes.Status400BadRequest);
-
             if (!await _context.Sites.AnyAsync(s => s.Id == dto.SiteId))
                 throw new AppException("The selected site does not exist.", StatusCodes.Status400BadRequest);
         }
 
         private async Task ValidateArtifact(UpdateArtifactDto dto)
         {
-            if (string.IsNullOrWhiteSpace(dto.Name))
-                throw new AppException("Artifact name is required.", StatusCodes.Status400BadRequest);
-
             if (!await _context.Sites.AnyAsync(s => s.Id == dto.SiteId))
                 throw new AppException("The selected site does not exist.", StatusCodes.Status400BadRequest);
+        }
+
+        private static void ValidateLanguageCode(string languageCode)
+        {
+            if (languageCode != "ar" && languageCode != "en")
+                throw new AppException("Language code must be 'ar' or 'en'.", StatusCodes.Status400BadRequest);
+        }
+
+        private static void ValidateTranslations(List<ArtifactTranslationDto> translations)
+        {
+            if (translations == null || !translations.Any())
+                throw new AppException("At least one translation is required.", StatusCodes.Status400BadRequest);
+
+            var languageCodes = translations.Select(t => t.LanguageCode).ToList();
+            var duplicates = languageCodes.GroupBy(x => x).Where(g => g.Count() > 1).Select(g => g.Key).ToList();
+
+            if (duplicates.Any())
+                throw new AppException($"Duplicate translations for language(s): {string.Join(", ", duplicates)}", StatusCodes.Status400BadRequest);
+
+            foreach (var translation in translations)
+            {
+                if (string.IsNullOrWhiteSpace(translation.Name))
+                    throw new AppException($"Artifact name is required for language '{translation.LanguageCode}'.", StatusCodes.Status400BadRequest);
+            }
         }
     }
 }

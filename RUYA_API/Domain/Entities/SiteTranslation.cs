@@ -1,28 +1,20 @@
-﻿namespace RUYA_API.Application.Services.Admin.DTOs.Site
+using RUYA_API.Domain.Common;
+
+namespace RUYA_API.Domain.Entities
 {
-    public class SiteDto
+    public class SiteTranslation : EntityBase
     {
-        public int Id { get; set; }
+        public int SiteId { get; set; }
+        public Site Site { get; set; } = null!;
 
-        public float Latitude { get; set; }
+        public string LanguageCode { get; set; } = string.Empty;
 
-        public float Longitude { get; set; }
-
-        public string ImageUrl { get; set; } = string.Empty;
-
-        // Localized fields (populated based on requested language)
         public string Name { get; set; } = string.Empty;
-
         public string City { get; set; } = string.Empty;
-
         public string Country { get; set; } = string.Empty;
-
         public string Hours { get; set; } = string.Empty;
-
         public string Ticket { get; set; } = string.Empty;
-
         public string Crowds { get; set; } = string.Empty;
-
         public string Description { get; set; } = string.Empty;
     }
 }

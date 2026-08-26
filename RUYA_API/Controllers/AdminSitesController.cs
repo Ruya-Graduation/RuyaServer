@@ -18,16 +18,16 @@ namespace RUYA_API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] string lang = "en")
         {
-            var sites = await _siteService.GetAllAsync();
+            var sites = await _siteService.GetAllAsync(lang);
             return Ok(ResponseFactory.Success(sites, "Sites retrieved successfully."));
         }
 
         [HttpGet("{id:int}")]
-        public async Task<IActionResult> GetById(int id)
+        public async Task<IActionResult> GetById(int id, [FromQuery] string lang = "en")
         {
-            var site = await _siteService.GetByIdAsync(id);
+            var site = await _siteService.GetByIdAsync(id, lang);
             return Ok(ResponseFactory.Success(site, "Site retrieved successfully."));
         }
 

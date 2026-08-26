@@ -7,22 +7,10 @@ namespace RUYA_API.Application.Services.Admin.DTOs.Artifact
         [Required]
         public int SiteId { get; set; }
 
-        [Required]
-        [MaxLength(200)]
-        public string Name { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(100)]
-        public string Category { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(100)]
-        public string Civilization { get; set; } = string.Empty;
-
-        [Required]
-        [MaxLength(100)]
-        public string Period { get; set; } = string.Empty;
-
         public IFormFile? Image { get; set; }
+
+        [Required]
+        [MinLength(1, ErrorMessage = "At least one translation is required.")]
+        public List<ArtifactTranslationDto> Translations { get; set; } = new();
     }
 }

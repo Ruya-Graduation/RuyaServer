@@ -5,53 +5,84 @@ namespace RUYA_API.Application.Services.Admin.Mappings
 {
     public static class SiteMapping
     {
-        public static SiteDto ToDto(this Site site)
+        public static SiteDto ToDto(this Site site, string languageCode)
         {
+            var translation = site.Translations.FirstOrDefault(t => t.LanguageCode == languageCode)
+                            ?? site.Translations.FirstOrDefault(t => t.LanguageCode == "en");
+
+            if (translation == null)
+            {
+                throw new InvalidOperationException($"No translation found for site {site.Id}");
+            }
+
             return new SiteDto
             {
                 Id = site.Id,
-                Name = site.Name,
-                City = site.City,
-                Country = site.Country,
                 Latitude = site.Latitude,
                 Longitude = site.Longitude,
-                Hours = site.Hours,
-                Ticket = site.Ticket,
-                Crowds = site.Crowds,
-                Description = site.Description,
-                ImageUrl = site.ImageUrl
+                ImageUrl = site.ImageUrl,
+                Name = translation.Name,
+                City = translation.City,
+                Country = translation.Country,
+                Hours = translation.Hours,
+                Ticket = translation.Ticket,
+                Crowds = translation.Crowds,
+                Description = translation.Description
             };
         }
 
         public static Site ToEntity(this CreateSiteDto dto)
         {
-            return new Site
+            var site = new Site
             {
-                Name = dto.Name,
-                City = dto.City,
-                Country = dto.Country,
                 Latitude = dto.Latitude,
                 Longitude = dto.Longitude,
-                Hours = dto.Hours,
-                Ticket = dto.Ticket,
-                Crowds = dto.Crowds,
-                Description = dto.Description,
                 ImageUrl = string.Empty,
                 ImagePublicId = string.Empty
             };
+
+            foreach (var translationDto in dto.Translations)
+            {
+                site.Translations.Add(new SiteTranslation
+                {
+                    LanguageCode = translationDto.LanguageCode,
+                    Name = translationDto.Name,
+                    City = translationDto.City,
+                    Country = translationDto.Country,
+                    Hours = translationDto.Hours,
+                    Ticket = translationDto.Ticket,
+                    Crowds = translationDto.Crowds,
+                    Description = translationDto.Description
+                });
+            }
+
+            return site;
         }
 
         public static void UpdateEntity(this UpdateSiteDto dto, Site site)
         {
-            site.Name = dto.Name;
-            site.City = dto.City;
-            site.Country = dto.Country;
             site.Latitude = dto.Latitude;
             site.Longitude = dto.Longitude;
-            site.Hours = dto.Hours;
-            site.Ticket = dto.Ticket;
-            site.Crowds = dto.Crowds;
-            site.Description = dto.Description;
+
+            // Remove existing translations
+            site.Translations.Clear();
+
+            // Add new translations
+            foreach (var translationDto in dto.Translations)
+            {
+                site.Translations.Add(new SiteTranslation
+                {
+                    SiteId = site.Id,
+                    LanguageCode = translationDto.LanguageCode,
+                    Name = translationDto.Name,
+                    City = translationDto.City,
+                    Country = translationDto.Country,
+                    Hours = translationDto.Hours,
+                    Ticket = translationDto.Ticket,
+                    Crowds = translationDto.Crowds,
+                    Description = translationDto.Description
+                });
+            }
         }
     }
 }
